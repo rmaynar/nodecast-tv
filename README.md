@@ -22,6 +22,7 @@ nodecast-tv is a modern, web-based IPTV player featuring Live TV, EPG, Movies (V
 - **🎛️ Hardware Transcoding**: GPU-accelerated transcoding with NVIDIA NVENC, AMD AMF, Intel QuickSync, and VAAPI support.
 - **🔊 Smart Audio**: Configurable 5.1→Stereo downmix presets (ITU, Night Mode, Cinematic) with automatic passthrough for compatible sources.
 - **📦 Stream Processing**: Auto-detection of stream codecs with smart remux/transcode decisions.
+- **⬇️ Downloads**: Save movies and series episodes directly from the source provider with a single click (toggle in Settings → Playback).
 - **🐳 Docker Ready**: Easy deployment containerization.
 
 ## Screenshots
@@ -207,6 +208,16 @@ All transcoding and stream processing settings are found in **Settings → Trans
 | Setting | What It Does | When to Enable |
 |---------|--------------|----------------|
 | **Force Backend Proxy** | Routes streams through the server for CORS headers | When streams fail with CORS errors, or using middleware |
+
+### Downloads
+
+| Setting | What It Does | Default |
+|---------|--------------|---------|
+| **Allow Downloads** | Shows a download button on movie cards and series episode rows | ON |
+
+When enabled, a download icon appears on hover (desktop) or always (touch devices). Clicking it streams the file directly from the source provider with a browser-prompted save dialog. The filename is automatically set to the content title.
+
+> **Note:** Downloads stream the raw source file — no transcoding is applied. The file format depends on your provider (typically `.mkv`, `.mp4`, or `.ts`).
 
 
 ## Troubleshooting
