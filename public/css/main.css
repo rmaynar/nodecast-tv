@@ -2473,7 +2473,20 @@ kbd {
     right: 6px;
   }
 
+  /* Download button - match favorite button sizing on mobile */
+  .movie-poster .download-btn,
+  .series-poster .download-btn {
+    width: 28px;
+    height: 28px;
+    top: 6px;
+    left: 6px;
+  }
+
   .fav-icon {
+    font-size: 1rem;
+  }
+
+  .dl-icon {
     font-size: 1rem;
   }
 
@@ -2733,6 +2746,11 @@ kbd {
     opacity: 1 !important;
   }
 
+  /* Always show download buttons on touch devices */
+  .download-btn {
+    opacity: 1 !important;
+  }
+
   /* Remove hover effects */
   .channel-item:hover,
   .movie-card:hover,
@@ -2847,6 +2865,107 @@ kbd {
 .fav-icon {
   font-size: 1.2rem;
   line-height: 1;
+}
+
+/* =====================================================
+   Download Button (.download-btn)
+   Sibling to .favorite-btn on movie/series posters and
+   per-episode rows on the series page.
+   ===================================================== */
+
+/* Base — mirrors .favorite-btn base */
+.download-btn {
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 5;
+  padding: 0;
+  background: none;
+}
+
+/* Poster variant (Movies / Series) — top-LEFT corner, opposite to .favorite-btn (top-right) */
+.movie-poster .download-btn,
+.series-poster .download-btn {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.9);
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease, background 0.2s ease;
+}
+
+/* Reveal on poster hover (desktop) */
+.movie-card:hover .movie-poster .download-btn,
+.series-card:hover .series-poster .download-btn {
+  opacity: 1;
+}
+
+/* Hover/active states — same feel as .favorite-btn */
+.movie-poster .download-btn:hover,
+.series-poster .download-btn:hover {
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  transform: scale(1.1);
+}
+
+.movie-poster .download-btn:active,
+.series-poster .download-btn:active {
+  transform: scale(0.95);
+}
+
+/* Focus ring — same as interactive buttons in the UI */
+.movie-poster .download-btn:focus-visible,
+.series-poster .download-btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.dl-icon {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+/* Episode variant — inline icon-only button on the right of each row */
+.episode-item .download-btn {
+  flex-shrink: 0;
+  margin-left: auto;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--color-text-muted);
+  opacity: 0;
+  transition: all 0.2s ease;
+}
+
+.episode-item:hover .download-btn {
+  opacity: 1;
+  color: var(--color-text-secondary);
+}
+
+.episode-item .download-btn:hover {
+  background: var(--color-bg-hover);
+  border-color: var(--color-border);
+  color: var(--color-text-primary);
+  transform: scale(1.05);
+}
+
+.episode-item .download-btn:active {
+  transform: scale(0.95);
+}
+
+.episode-item .download-btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }
 
 /* Filter Button Active State */

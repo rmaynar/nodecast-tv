@@ -160,6 +160,12 @@ const API = {
         getDefaults: () => API.request('GET', '/settings/defaults')
     },
 
+    // Download
+    download: {
+        buildUrl: (sourceId, itemId, type, container, title) =>
+            `/api/download/${sourceId}/${type}/${itemId}?container=${encodeURIComponent(container)}&name=${encodeURIComponent(title)}`
+    },
+
     // Users (admin only)
     users: {
         getAll: () => API.request('GET', '/auth/users'),

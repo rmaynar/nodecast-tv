@@ -1,0 +1,26 @@
+node_modules
+npm-debug.log
+.git
+.gitignore
+.dockerignore
+.DS_Store
+.env
+*.log
+
+# Local data — overwritten by the bind-mount at runtime
+data
+user_data
+transcode-cache
+
+# Build artefacts
+dist
+release
+coverage
+.vscode
+
+# Personal planning notes (gitignored too)
+tasks
+
+# Patches, IDE
+*.patch
+.code-review-graph

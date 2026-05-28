@@ -12,8 +12,15 @@ FROM ubuntu:24.04
 
 # Install Node.js, FFmpeg, and hardware acceleration drivers
 ARG TARGETARCH
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install -y --no-install-recommends \
+# Optional HTTPS proxy for build-time fetches (corporate TLS interception workaround).
+# Pass at build time:  --build-arg HTTPS_PROXY=http://192.168.8.120:8080
+ARG HTTPS_PROXY=""
+ENV DEBIAN_FRONTEND=noninteractive \
+    https_proxy=${HTTPS_PROXY}
+RUN if [ -n "$HTTPS_PROXY" ]; then \
+        echo "Acquire::https::Proxy \"$HTTPS_PROXY\";" > /etc/apt/apt.conf.d/99proxy; \
+    fi \
+    && apt-get update && apt-get install -y --no-install-recommends \
     curl \
     ca-certificates \
     gnupg \
@@ -42,6 +49,9 @@ COPY package*.json ./
 
 # Install dependencies (better-sqlite3 will build from source using g++ installed above)
 RUN npm ci --only=production
+
+# Clear build-time proxy from the image so runtime doesn't accidentally route IPTV traffic through it
+ENV https_proxy=""
 
 # Copy application files
 COPY . .

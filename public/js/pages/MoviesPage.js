@@ -283,14 +283,16 @@ class MoviesPage {
             const rating = movie.rating ? `${Icons.star} ${movie.rating}` : '';
 
             const isFav = this.favoriteIds.has(`${movie.sourceId}:${movie.stream_id}`);
+            const downloadsAllowed = !!(this.app.player && this.app.player.settings && this.app.player.settings.allow_downloads);
 
             card.innerHTML = `
                 <div class="movie-poster">
-                    <img src="${poster}" alt="${movie.name}" 
+                    <img src="${poster}" alt="${movie.name}"
                          onerror="this.onerror=null;this.src='/img/placeholder.png'" loading="lazy">
                     <div class="movie-play-overlay">
                         <span class="play-icon">${Icons.play}</span>
                     </div>
+                    ${downloadsAllowed ? `<button class="download-btn" title="Download" aria-label="Download"><span class="dl-icon">${Icons.download}</span></button>` : ''}
                     <button class="favorite-btn ${isFav ? 'active' : ''}" title="${isFav ? 'Remove from Favorites' : 'Add to Favorites'}">
                         <span class="fav-icon">${isFav ? Icons.favorite : Icons.favoriteOutline}</span>
                     </button>
@@ -304,8 +306,13 @@ class MoviesPage {
                 </div>
             `;
 
-            // Card click plays movie, but not if clicking favorite button
+            // Card click plays movie, but not if clicking download or favorite button
             card.addEventListener('click', (e) => {
+                if (e.target.closest('.download-btn')) {
+                    e.stopPropagation();
+                    this.downloadMovie(movie);
+                    return;
+                }
                 if (e.target.closest('.favorite-btn')) {
                     const btn = e.target.closest('.favorite-btn');
                     this.toggleFavorite(movie, btn);
@@ -361,6 +368,22 @@ class MoviesPage {
             console.error('Error playing movie:', err);
         }
     }
+    downloadMovie(movie) {
+        try {
+            const container = movie.container_extension || 'mp4';
+            const url = API.download.buildUrl(movie.sourceId, movie.stream_id, 'movie', container, movie.name);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${movie.name}.${container}`;
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        } catch (err) {
+            console.error('Error triggering movie download:', err);
+        }
+    }
+
     async toggleFavorite(movie, btn) {
         const favKey = `${movie.sourceId}:${movie.stream_id}`;
         const isFav = this.favoriteIds.has(favKey);

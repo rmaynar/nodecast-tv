@@ -372,6 +372,7 @@ class SeriesPage {
             // Render seasons and episodes
             let html = '';
             const seasons = Object.keys(info.episodes).sort((a, b) => parseInt(a) - parseInt(b));
+            const downloadsAllowed = !!(this.app.player && this.app.player.settings && this.app.player.settings.allow_downloads);
 
             seasons.forEach(seasonNum => {
                 const episodes = info.episodes[seasonNum];
@@ -387,6 +388,9 @@ class SeriesPage {
                                 <span class="episode-number">E${ep.episode_num}</span>
                                 <span class="episode-title">${ep.title || `Episode ${ep.episode_num}`}</span>
                                 <span class="episode-duration">${ep.duration || ''}</span>
+                                ${downloadsAllowed ? `<button class="download-btn" title="Download episode" aria-label="Download episode" data-action="download">
+                                    <span class="dl-icon">${Icons.download}</span>
+                                </button>` : ''}
                             </div>
                         `).join('')}
                     </div>
@@ -402,8 +406,15 @@ class SeriesPage {
                 });
             });
 
-            this.seasonsContainer.querySelectorAll('.episode-item').forEach(ep => {
-                ep.addEventListener('click', () => this.playEpisode(ep));
+            this.seasonsContainer.querySelectorAll('.episode-item').forEach(epEl => {
+                epEl.addEventListener('click', (e) => {
+                    if (e.target.closest('.download-btn')) {
+                        e.stopPropagation();
+                        this.downloadEpisode(epEl);
+                        return;
+                    }
+                    this.playEpisode(epEl);
+                });
             });
 
         } catch (err) {
@@ -459,6 +470,32 @@ class SeriesPage {
             }
         } catch (err) {
             console.error('Error playing episode:', err);
+        }
+    }
+
+    downloadEpisode(epEl) {
+        try {
+            const sourceId = epEl.dataset.sourceId;
+            const itemId = epEl.dataset.episodeId;
+            const container = epEl.dataset.container || 'mp4';
+            const epNum = epEl.querySelector('.episode-number')?.textContent?.replace('E', '') || '1';
+            const epTitle = epEl.querySelector('.episode-title')?.textContent || `Episode ${epNum}`;
+            const seriesName = this.currentSeries?.name || '';
+            const title = (seriesName
+                ? `${seriesName} - E${epNum} - ${epTitle}`
+                : `E${epNum} - ${epTitle}`
+            ).replace(/\s+/g, ' ').trim();
+
+            const url = API.download.buildUrl(sourceId, itemId, 'series', container, title);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${title}.${container}`;
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        } catch (err) {
+            console.error('Error downloading episode:', err);
         }
     }
 
