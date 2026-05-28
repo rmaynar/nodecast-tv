@@ -34,6 +34,7 @@ class SettingsPage {
         const volumeValueDisplay = document.getElementById('volume-value');
         const rememberVolumeToggle = document.getElementById('setting-remember-volume');
         const autoPlayNextToggle = document.getElementById('setting-autoplay-next');
+        const allowDownloadsToggle = document.getElementById('setting-allow-downloads');
 
         // Load current settings
         if (this.app.player?.settings) {
@@ -43,6 +44,7 @@ class SettingsPage {
             volumeValueDisplay.textContent = this.app.player.settings.defaultVolume + '%';
             rememberVolumeToggle.checked = this.app.player.settings.rememberVolume;
             autoPlayNextToggle.checked = this.app.player.settings.autoPlayNextEpisode;
+            if (allowDownloadsToggle) allowDownloadsToggle.checked = this.app.player.settings.allow_downloads || false;
         }
 
         // Arrow keys toggle
@@ -74,6 +76,12 @@ class SettingsPage {
         // Auto-play next episode toggle
         autoPlayNextToggle.addEventListener('change', () => {
             this.app.player.settings.autoPlayNextEpisode = autoPlayNextToggle.checked;
+            this.app.player.saveSettings();
+        });
+
+        // Allow downloads toggle
+        allowDownloadsToggle?.addEventListener('change', () => {
+            this.app.player.settings.allow_downloads = allowDownloadsToggle.checked;
             this.app.player.saveSettings();
         });
 
@@ -557,6 +565,7 @@ class SettingsPage {
             const volumeValueDisplay = document.getElementById('volume-value');
             const rememberVolumeToggle = document.getElementById('setting-remember-volume');
             const autoPlayNextToggle = document.getElementById('setting-autoplay-next');
+            const allowDownloadsToggle = document.getElementById('setting-allow-downloads');
             const forceProxyToggle = document.getElementById('setting-force-proxy');
             const forceTranscodeToggle = document.getElementById('setting-force-transcode');
             const forceRemuxToggle = document.getElementById('setting-force-remux');
@@ -570,6 +579,7 @@ class SettingsPage {
             if (volumeValueDisplay) volumeValueDisplay.textContent = s.defaultVolume + '%';
             if (rememberVolumeToggle) rememberVolumeToggle.checked = s.rememberVolume;
             if (autoPlayNextToggle) autoPlayNextToggle.checked = s.autoPlayNextEpisode;
+            if (allowDownloadsToggle) allowDownloadsToggle.checked = s.allow_downloads || false;
             if (forceProxyToggle) forceProxyToggle.checked = s.forceProxy || false;
             if (forceTranscodeToggle) forceTranscodeToggle.checked = s.forceTranscode || false;
             if (forceRemuxToggle) forceRemuxToggle.checked = s.forceRemux || false;

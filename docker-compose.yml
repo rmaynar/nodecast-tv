@@ -1,7 +1,9 @@
 services:
   nodecast-tv:
-    image: ghcr.io/technomancer702/nodecast-tv:latest
-    build: https://github.com/technomancer702/nodecast-tv.git#main
+    image: nodecast-tv:local
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: nodecast-tv
     ports:
       - "3000:3000"

@@ -10,3 +10,4 @@ dist/
 release/
 .vscode
 transcode-cache/
+tasks/
